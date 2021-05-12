@@ -1,0 +1,335 @@
+command /package [<text>] [<text>] [<text>]:
+	permission: package.admin  
+	permission message: &c(!) You do not have permission to execute this command.
+	trigger:
+		if arg 1 is set:
+			if arg 1 is "create":
+				if arg 2 is set:
+					if arg 3 is set:
+						loop {PackageALL::*}:
+							if arg 2 is "%loop-value%":
+								message "&c&l(!) %arg 2% is already an available package.."
+								stop 
+						if arg 3 is "command":
+							message "&b&lYou have created a package named %arg 2% as a COMMAND."
+							message "&b&lType in chat:"
+							message "&7* &7&nDONE &7to finish the package."
+							message "&7* &7&nCANCEL&7to cancel the package."
+							message "&7* &7&nCLEAR&7to clear the package."
+							message "&7Type in chat the command without &7&n/"
+							message "&7i.g. Type in chat &7&nminecraft:me HELLO %%player%%&7."
+							message "&b&lVariables:"
+							message "&7* &7&n%%player%%&7 - Claimer's Name"
+							set {PackageME::%player%} to "%arg 2%"
+							set {PackageINFO::%player%} to "command"
+							set {PackageBoolean::%player%} to true 
+							set {PackageBooleanEDIT::%player%} to false 
+						if arg 3 is "item":
+							message "&b&lYou have created a package named %arg 2% as an ITEM."
+							message "&b&lType in chat:"
+							message "&7* &7&nDONE &7to finish the package."
+							message "&7* &7&nCANCEL&7to cancel the package."
+							message "&7* &7&nCLEAR&7to clear the package."
+							message "&7* &7&nADD&7 while holding the item you wish to add in the package, to add the item into the package."
+							set {PackageME::%player%} to "%arg 2%"
+							set {PackageINFO::%player%} to "item"
+							set {PackageBoolean::%player%} to true 
+							set {PackageBooleanEDIT::%player%} to false 
+					if arg 3 is not set:
+						message "&6/package create <package name> command OR item"
+				if arg 2 is not set:
+					message "&6/package create <package name> command OR item"
+			if arg 1 is "edit":
+				if arg 2 is set:
+					if arg 3 is set:
+						loop {PackageALL::*}:
+							if arg 2 is "%loop-value%":
+								if arg 3 is "command":
+									message "&b&lStarting edit of package named %arg 2% - COMMAND."
+									message "&b&lType in chat:"
+									message "&7* &7&nDONE &7to finish the package."
+									message "&7* &7&nCANCEL&7to cancel the package."
+									message "&7* &7&nCLEAR&7to clear the package."
+									message "&7Type in chat the command without &7&n/"
+									message "&7i.g. Type in chat &7&nminecraft:me HELLO %%player%%&7."
+									message "&b&lVariables:"
+									message "&7* &7&n%%player%%&7 - Claimer's Name"
+									set {PackageME::%player%} to "%arg 2%"
+									set {PackageINFO::%player%} to "command"
+									set {PackageBoolean::%player%} to false 
+									set {PackageBooleanEDIT::%player%} to true 
+								if arg 3 is "item":
+									message "&b&lStarting edit of package named %arg 2% - ITEM."
+									message "&b&lType in chat:"
+									message "&7* &7&nDONE &7to finish the package."
+									message "&7* &7&nCANCEL&7to cancel the package."
+									message "&7* &7&nCLEAR&7to clear the package."
+									message "&7* &7&nADD&7 while holding the item you wish to add in the package, to add the item into the package."
+									set {PackageME::%player%} to "%arg 2%"
+									set {PackageINFO::%player%} to "item"
+									set {PackageBoolean::%player%} to false 
+									set {PackageBooleanEDIT::%player%} to true 
+								stop 
+						message "&c&l(!) %arg 2% is not an available package."
+					if arg 3 is not set:
+						message "&6/package edit <package name> command OR item"
+				if arg 2 is not set:
+					message "&6/package edit <package name> command OR item"
+			if arg 1 is "apply":
+				if arg 2 is set:
+					if arg 3 is set:
+						loop {PackageALL::*}:
+							if arg 3 is "%loop-value%":
+								message "&b&l(!) You have applied %loop-value% to %arg 2%."
+								add 1 to {Packages::%arg 2%} 
+								add "%loop-value%" to {PackageMine.%arg 2%::*} 
+								stop 
+						message "&c&l(!) %arg 3% is not a valid package."
+					if arg 3 is not set:
+						message "&6/package apply <player> <Package Name>"
+				if arg 2 is not set:
+					message "&6/package apply <player> <Package Name>"
+			if arg 1 is "remove":
+				if arg 2 is set:
+					if arg 3 is set:
+						loop {PackageALL::*}:
+							if arg 3 is "%loop-value%":
+								if {PackageMine.%arg 2%::*} contains "%loop-value%":
+									message "&c&l(!) You have removed %loop-value% from %arg 2%."
+									remove 1 from {Packages::%arg 2%} 
+									remove "%loop-value%" from {PackageMine.%arg 2%::*} 
+									stop 
+								message "&c&l(!) %arg 2% does not have the %loop-value% package."
+								stop 
+						message "&c&l(!) %arg 3% is not a valid package."
+					if arg 3 is not set:
+						message "&6/package remove <player> <Package Name>"
+				if arg 2 is not set:
+					message "&6/package remove <player> <Package Name>"
+			if arg 1 is "list":
+				message "&6&lList of Available Packages:"
+				message "&e%{PackageALL::*}%"
+			if arg 1 is "delete":
+				if arg 2 is set:
+					loop {PackageALL::*}:
+						if arg 2 is "%loop-value%":
+							remove arg 2 from {PackageALL::*}
+							message "&c&l(!) Deleted %arg 2% package."
+							stop 
+					message "&c&l(!) %arg 2% is not a valid package."
+				if arg 2 is not set:
+					message "&6/package delete <package name>"
+		if arg 1 is not set:
+			message "&6&lPackage"
+			message "&7Packages is a system for purchased buycraft/webstore items, to be in a collection system."
+			message "&6/package create <Package Name> command/item"
+			message "&6/package delete <Package Name>"
+			message "&6/package list"
+			message "&6/package edit <Package Name> command/item"
+			message "&7* You can edit which aspect of the package. Either commands or items."
+			message "&6/package apply <player> <Package Name>"
+			message "&6/package remove <player> <Package Name>"
+			
+			
+on chat: 		
+	if {PackageBooleanEDIT::%player%} is true:
+		if {PackageINFO::%player%} is "command":
+			cancel event 
+			if message is "DONE":
+				set {PackageBooleanEDIT::%player%} to false 
+				message "&b&lPackage Commands of %{PackageME::%player%}%:"
+				loop {PackageCMDs.%{PackageME::%player%}%::*}:
+					message "&7* /%loop-value%"
+				message "&a&lSAVED PACKAGE"
+				stop 
+			if message is "CANCEL":
+				message "&c&lENDED PACKAGE CREATION"
+				set {PackageBooleanEDIT::%player%} to false 
+				loop {PackageCMDs.%{PackageME::%player%}%::*}:
+					remove "%loop-value%" from {PackageCMDs.%{PackageME::%player%}%::*}
+				stop 
+			if message is "CLEAR":
+				message "&c&lCLEARED PACKAGE"
+				loop {PackageITEMs.%{PackageME::%player%}%::*}:
+					remove "%loop-value%" from {PackageITEMs.%{PackageME::%player%}%::*}
+				loop {PackageCMDs.%{PackageME::%player%}%::*}:
+					remove "%loop-value%" from {PackageCMDs.%{PackageME::%player%}%::*}
+				stop 
+			add "%message%" to {PackageCMDs.%{PackageME::%player%}%::*}
+			message "&b&lAvailable Commands:"
+			loop {PackageCMDs.%{PackageME::%player%}%::*}:
+				message "&7* /%loop-value%"
+			message "&b&l(!) Added /%message% to %{PackageME::%player%}%"
+			
+			
+on chat: 		
+	if {PackageBooleanEDIT::%player%} is true:
+		if {PackageINFO::%player%} is "item":
+			cancel event 
+			if message is "DONE":
+				set {PackageBooleanEDIT::%player%} to false 
+				message "&b&lPackage Commands of %{PackageME::%player%}%:"
+				loop {PackageCMDs.%{PackageME::%player%}%::*}:
+					message "&7* /%loop-value%"
+				message "&a&lSAVED PACKAGE"
+				stop 
+			if message is "CANCEL":
+				message "&c&lENDED PACKAGE CREATION"
+				set {PackageBooleanEDIT::%player%} to false 
+				loop {PackageITEMs.%{PackageME::%player%}%::*}:
+					remove "%loop-value%" from {PackageITEMs.%{PackageME::%player%}%::*}
+				stop 
+			if message is "CLEAR":
+				message "&c&lCLEARED PACKAGE"
+				loop {PackageITEMs.%{PackageME::%player%}%::*}:
+					remove "%loop-value%" from {PackageITEMs.%{PackageME::%player%}%::*}
+				loop {PackageCMDs.%{PackageME::%player%}%::*}:
+					remove "%loop-value%" from {PackageCMDs.%{PackageME::%player%}%::*}
+				stop 
+			add tool of player to {PackageITEMs.%{PackageME::%player%}%::*}
+			message "&b&l(!) Added held item to %{PackageME::%player%}%"
+		
+			
+on chat: 		
+	if {PackageBoolean::%player%} is true:
+		if {PackageINFO::%player%} is "command":
+			cancel event 
+			if message is "DONE":
+				set {PackageBoolean::%player%} to false 
+				message "&b&lPackage Commands of %{PackageME::%player%}%:"
+				loop {PackageCMDs.%{PackageME::%player%}%::*}:
+					message "&7* /%loop-value%"
+				add {PackageME::%player%} to {PackageALL::*}
+				message "&a&lCreated Package - %{PackageME::%player%}%"
+				stop 
+			if message is "CANCEL":
+				message "&c&lENDED PACKAGE CREATION"
+				set {PackageBoolean::%player%} to false 
+				loop {PackageCMDs.%{PackageME::%player%}%::*}:
+					remove "%loop-value%" from {PackageCMDs.%{PackageME::%player%}%::*}
+				stop 
+			if message is "CLEAR":
+				message "&c&lCLEARED PACKAGE"
+				loop {PackageITEMs.%{PackageME::%player%}%::*}:
+					remove "%loop-value%" from {PackageITEMs.%{PackageME::%player%}%::*}
+				loop {PackageCMDs.%{PackageME::%player%}%::*}:
+					remove "%loop-value%" from {PackageCMDs.%{PackageME::%player%}%::*}
+				stop 
+			add "%message%" to {PackageCMDs.%{PackageME::%player%}%::*}
+			message "&b&lAvailable Commands:"
+			loop {PackageCMDs.%{PackageME::%player%}%::*}:
+				message "&7* /%loop-value%"
+			message "&b&l(!) Added /%message% to %{PackageME::%player%}%"
+			
+			
+on chat: 		
+	if {PackageBoolean::%player%} is true:
+		if {PackageINFO::%player%} is "item":
+			cancel event 
+			if message is "DONE":
+				set {PackageBoolean::%player%} to false 
+				add {PackageME::%player%} to {PackageALL::*}
+				message "&a&lCreated Package - %{PackageME::%player%}%"
+				stop 
+			if message is "CANCEL":
+				message "&c&lENDED PACKAGE CREATION"
+				set {PackageBoolean::%player%} to false 
+				loop {PackageITEMs.%{PackageME::%player%}%::*}:
+					remove "%loop-value%" from {PackageITEMs.%{PackageME::%player%}%::*}
+				stop 
+			if message is "CLEAR":
+				message "&c&lCLEARED PACKAGE"
+				loop {PackageITEMs.%{PackageME::%player%}%::*}:
+					remove "%loop-value%" from {PackageITEMs.%{PackageME::%player%}%::*}
+				loop {PackageCMDs.%{PackageME::%player%}%::*}:
+					remove "%loop-value%" from {PackageCMDs.%{PackageME::%player%}%::*}
+				stop 
+			add tool of player to {PackageITEMs.%{PackageME::%player%}%::*}
+			message "&b&l(!) Added held item to %{PackageME::%player%}%"
+
+command /claim:
+	trigger:
+		if {Packages::%player%} is greater than 0:
+			set {_PackageSLOT} to 0 
+			if {Packages::%player%} is between 0 and 10:
+				open chest with 1 rows named "&b&l%{Packages::%player%}% Packages" to player
+			if {Packages::%player%} is between 10 and 19:
+				open chest with 2 rows named "&b&l%{Packages::%player%}% Packages" to player
+			if {Packages::%player%} is between 19 and 28:
+				open chest with 3 rows named "&b&l%{Packages::%player%}% Packages" to player
+			if {Packages::%player%} is between 28 and 37:
+				open chest with 4 rows named "&b&l%{Packages::%player%}% Packages" to player
+			if {Packages::%player%} is between 37 and 46:
+				open chest with 5 rows named "&b&l%{Packages::%player%}% Packages" to player
+			if {Packages::%player%} is greater than 45:
+				open chest with 6 rows named "&b&l%{Packages::%player%}% Packages" to player
+			loop {PackageMine.%player%::*}:
+				if {_PackageSLOT} is greater than 53:
+					stop 
+				format slot {_PackageSLOT} of player with chest named "&a%loop-value%" with lore "&7Click to claim all your current unclaimed||&7packages.|| ||&a&lNOTE:||&7After claiming al your unclaimed packages, you will||&7not be able to reclaim the packages." to close then run [make player execute command "/claimall"]
+				add 1 to {_PackageSLOT}
+		else:
+			make console execute command "/execute %player% ~ ~ ~ playsound mob.villager.no %player% ~ ~ ~ 3 0.5"
+			message "&c(!) You do not have an unclamed packages."
+			
+			
+command /claimall:
+	trigger:
+		if {Packages::%player%} is greater than 0:
+			set {Packages::%player%} to 0 
+			loop {PackageMine.%player%::*}:
+				wait 2 ticks 
+				make console execute command "/execute %player% ~ ~ ~ playsound random.levelup %player% ~ ~ ~ 3 0.8"
+				remove loop-value from {PackageMine.%player%::*} 
+				loop {PackageITEMs.%loop-value%::*}: 
+					add loop-value-2 to player 
+				loop {PackageCMDs.%loop-value%::*}:
+					set {_ExecuteCommand} to loop-value-2 
+					replace "%%player%%" with "%player%" in {_ExecuteCommand} 
+					make console execute command "/%{_ExecuteCommand}%"
+				message "&a&l(!) You have claimed the &a&l&n%loop-value% package&a&l."
+				message "&7You have received the item(S) in the &7&n%loop-value%&7 package."
+		else:
+			make console execute command "/execute %player% ~ ~ ~ playsound mob.villager.no %player% ~ ~ ~ 3 0.5"
+			message "&c(!) You do not have an unclamed packages."
+			
+
+on join:
+	if {Packages::%player%} is greater than 0:
+		wait 1 second 
+		message "&b&l(!) UNCLAIMED PACKAGES"
+		message "&7You have &b&n%{Packages::%player%}%&7 unclaimed packages. Claim the packages by doing &b&n/claim&7 to claim the packages."
+		message "&3&l"
+		send json of "       &f&l* &a&lCLAIM PACKAGES &7(Click)" tooltip "&7Click to claim ALL your unclaimed packages.%new line% %new line%&3&lAlternative Command(S):%new line%  &7* /claimall" run "/claimall" to player
+		message "&3&l"
+		send json of "       &f&l* &3&lVIEW PACKAGES &7(Click)" tooltip "&7Click to view ALL your unclaimed packages.%new line% %new line%&3&lAlternative Command(S):%new line%  &7* /claim" run "/claim" to player
+		message "&3&l"
+		make console execute command "/execute %player% ~ ~ ~ playsound random.levelup %player% ~ ~ ~ 3 0.8"
+		make console execute command "/execute %player% ~ ~ ~ particle witchMagic ~ ~ ~ 0 0.1 0 0.1 300"
+
+command /packages:
+	trigger:
+		if {Packages::%player%} is greater than 0:
+			message "&b&l(!) UNCLAIMED PACKAGES"
+			message "&7You have &b&n%{Packages::%player%}%&7 unclaimed packages. Claim the packages by doing &b&n/claim&7 to claim the packages."
+			message "&3&l"
+			send json of "       &f&l* &a&lCLAIM PACKAGES &7(Click)" tooltip "&7Click to claim ALL your unclaimed packages.%new line% %new line%&3&lAlternative Command(S):%new line%  &7* /claimall" run "/claimall" to player
+			message "&3&l"
+			send json of "       &f&l* &3&lVIEW PACKAGES &7(Click)" tooltip "&7Click to view ALL your unclaimed packages.%new line% %new line%&3&lAlternative Command(S):%new line%  &7* /claim" run "/claim" to player
+			message "&3&l"
+			make console execute command "/execute %player% ~ ~ ~ playsound random.levelup %player% ~ ~ ~ 3 0.8"
+		else:
+			make console execute command "/execute %player% ~ ~ ~ playsound mob.villager.no %player% ~ ~ ~ 3 0.5"
+			message "&c(!) You do not have an unclamed packages."
+		
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+			
